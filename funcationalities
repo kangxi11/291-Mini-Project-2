@@ -1,0 +1,35 @@
+Basically what we put in WHERE (SQL)
+Constraints are separated by a space which is equivalent to AND
+
+Find keyword in subject:
+subj: KEYWORD
+
+Find keyword in body:
+body: KEYWORD
+
+Find keyword in body / subject:
+KEYWORD
+
+(can add % to beginning or end of keyword to make it prefix / suffix)
+
+Find emails from this email:
+from:EXAMPLE_EMAIL
+
+Find emails sent to this email:
+to:EXAMPLE_EMAIL
+
+Find emails cc'd with this email:
+cc:EXAMPLE_EMAIL
+
+Find emails bcc'd with this email:
+bcc:EXAMPLE_EMAIL
+
+Find emails from this date:
+date:EXAMPLE_DATE
+
+Find emails after this date:
+date>EXAMPLE_DATE
+
+Find emails before this date:
+date<EXAMPLE_DATE
+
