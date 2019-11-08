@@ -1,6 +1,9 @@
 Basically what we put in WHERE (SQL)
 Constraints are separated by a space which is equivalent to AND
 
+CASE INSENSITIVE
+CAN HAVE SPACE IN BETWEEN (subj   :    EXAMPLE) is valid
+
 Find keyword in subject:
 subj: KEYWORD
 
@@ -10,7 +13,7 @@ body: KEYWORD
 Find keyword in body / subject:
 KEYWORD
 
-(can add % to beginning or end of keyword to make it prefix / suffix)
+(can add % to the end of keyword to make it prefix)
 
 Find emails from this email:
 from:EXAMPLE_EMAIL
