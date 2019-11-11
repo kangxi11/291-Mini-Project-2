@@ -5,7 +5,7 @@ class Email(object):
         self.body = body
 
 def main():
-    f = open ("10_data.xml", "r")
+    f = open ("1000_data.xml", "r")
     lines = f.readlines()
     emails = []
 
