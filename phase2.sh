@@ -1,11 +1,11 @@
 #!/bin/sh
 
-#sort -u terms.txt
+sort -u -o terms.txt terms.txt
 sort -u -o emails.txt emails.txt
-#sort -u dates.txt
-#sort -u recs.txt
-#perl break.pl < terms.txt
-perl break.pl < emails.txt | db_load -t btree em.idx
-#perl break.pl < dates.txt
-#perl break.pl < recs.txt
+#sort -u -o dates.txt dates.txt
+#sort -u -o recs.txt recs.txt
+perl break.pl < terms.txt | db_load -T -t btree te.idx
+perl break.pl < emails.txt | db_load -T -t btree em.idx
+#perl break.pl < dates.txt | db_load -T -t btree da.idx
+#perl break.pl < recs.txt | db_load -T -t hash re.idx
 
