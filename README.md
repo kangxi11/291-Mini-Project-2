@@ -1,3 +1,5 @@
-# 291-Mini-Project-2
+Daniel Han - wonseok1
+Michelle Aubin - phiangda
+Ryan Kang - rkang1
 
-stuff
+*We did not collaborate with any group(s) or person(s)
