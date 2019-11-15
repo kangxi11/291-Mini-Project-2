@@ -11,7 +11,7 @@ def main():
     while True:
         query = input("Please enter your query: ")
         if query == "exit":
-            break;
+            break
 
 
 main()
