@@ -21,6 +21,7 @@ def main():
         emailPrefixes = ["from", "to", "cc", "bcc"]
         termPrefixes = ["subj", "body"]
         comparators = ["=", "<=", ">=", "<", ">"]
+        rows = []
 
         if query == "exit":
             break
@@ -37,8 +38,6 @@ def main():
                     result.append(y)
         # handle the query
         for word in result:
-            # clear rows list
-            rows = []
             # get next word
             if result.index(word) != len(result)-1:
                 next_word = result[result.index(word)+1]
@@ -47,10 +46,12 @@ def main():
                 prev_word = result[result.index(word)-1]
             # check if word is to, from, cc or bcc
             if word in emailPrefixes:
-                rows = searchEmails(word, next_word)
+                returns = searchEmails(word, next_word)
+                rows.append(returns)
             # check if word is subj or body
             else if word in termPrefixes:
-                rows = searchTerms(word, next_word)
+                returns = searchTerms(word, next_word)
+                rows.append(returns)
             # check if word is date
             else if word[:4] == "date":
                 # daniel handles all the different cases
@@ -78,7 +79,8 @@ def main():
             else:
                 print(output)
             # we'll deal with the correct printing later
-
+            # clear rows list
+            rows = []
 
 
 
