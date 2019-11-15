@@ -1,8 +1,30 @@
 from bsddb3 import db
 
+# returns a list of key value pairs specified by row keys in rows
+def searchRecords(rows):
+    database = db.DB()
+    database.open("re.idx")
+    cur = database.cursor()
+    output = []
+
+    for row in rows:
+        iter = cur.set(row)
+        # add key value pair to output
+        output.append(iter)
+    return output
+   
+# returns a set of row values associated with given field-email key
 def searchEmails(field, email):
-    print("field is", field)
-    print("email is", email)
+    database = db.DB()
+    database.open("em.idx")
+    cur = database.cursor()
+    key = field + "-" + email
+    rows = set()
+    iter = cur.set(key.encode("utf-8"))
+    while iter:
+        rows.add(iter[1])
+        iter = cur.next_dup()
+    return rows
 
 def main():
     print("\nWelcome to the information retrieval system.")
@@ -21,7 +43,7 @@ def main():
         emailPrefixes = ["from", "to", "cc", "bcc"]
         termPrefixes = ["subj", "body"]
         comparators = ["=", "<=", ">=", "<", ">"]
-        rows = []
+        rows = set()
 
         if query == "exit":
             break
@@ -38,49 +60,64 @@ def main():
                     result.append(y)
         # handle the query
         for word in result:
+            first = False
             # get next word
             if result.index(word) != len(result)-1:
                 next_word = result[result.index(word)+1]
             # get previous word
             if result.index(word) != 0:
                 prev_word = result[result.index(word)-1]
+            # set flag for first word
+            else:
+                first = True
             # check if word is to, from, cc or bcc
             if word in emailPrefixes:
                 returns = searchEmails(word, next_word)
-                rows.append(returns)
+                # if its the first return put it in rows
+                if first:
+                    rows = returns
+                # else intersect returns with rows
+                else:
+                    rows = rows & returns
             # check if word is subj or body
-            else if word in termPrefixes:
+            elif word in termPrefixes:
                 returns = searchTerms(word, next_word)
-                rows.append(returns)
+                # if its the first return put it in rows
+                if first:
+                    rows = returns
+                # else intersect returns with rows
+                else:
+                    rows = rows & returns
             # check if word is date
-            else if word[:4] == "date":
+            elif word[:4] == "date":
                 # daniel handles all the different cases
+                continue
             # word is not a prefix
             else:
                 # word is < > <= >= or =
                 if word in comparators:
                     continue
                 # word is part of email or term query
-                else if prev_word in emailPrefixes or prev_word in termPrefixes:
+                elif prev_word in emailPrefixes or prev_word in termPrefixes:
                     continue
                 # word is part of date query
-                else if "date" in prev_word or prev_word in comparators:
+                elif "date" in prev_word or prev_word in comparators:
                     continue
                 # word is a term to search for in subj and body fields
                 else:
                     # ryan implements this part
+                    continue
 
-            # get output from records index and print
-            output = searchRecords(rows)
-            # print full output
-            if setting:
-                print(output)
-            # print brief output
-            else:
-                print(output)
-            # we'll deal with the correct printing later
-            # clear rows list
-            rows = []
+        # get output from records index and print
+        output = searchRecords(rows)
+        # print full output
+        if setting:
+            print(output)
+        # print brief output
+        else:
+            for x in output:
+                print(x)
+        # we'll deal with the correct printing later
 
 
 
