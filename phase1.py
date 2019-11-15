@@ -1,3 +1,5 @@
+import sys
+
 lines = []
 
 class RecsEmail(object):
@@ -190,7 +192,7 @@ def create_terms():
 def main():
     global lines
 
-    f = open ("10_data.xml", "r")
+    f = open(sys.argv[1], "r")
     lines = f.readlines()
 
     create_terms()
