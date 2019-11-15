@@ -15,29 +15,29 @@ def main():
     # uncomment later to open file passed as command line arg
     #f = open(sys.argv[1], "r")
 
-    f = open("1000_data.xml", "r")
+    f = open("10_data.xml", "r")
     lines = f.readlines()
     emails = []
 
     # extract all necessary info from xml file
     for line in lines:
         if line.find("<mail>") != -1:
-            row = line[line.find("<row>")+5:line.find("</row>")].lower()
-            fr = line[line.find("<from>")+6:line.find("</from>")].lower()
-            date = line[line.find("<date>")+6:line.find("</date>")].lower()
+            row = line[line.find("<row>")+5:line.find("</row>")]
+            fr = line[line.find("<from>")+6:line.find("</from>")]
+            date = line[line.find("<date>")+6:line.find("</date>")]
             to = ""
             if line.find("<to>") != -1:
-                to = line[line.find("<to>")+4:line.find("</to>")].lower()
+                to = line[line.find("<to>")+4:line.find("</to>")]
             cc = ""
             if line.find("<cc>") != -1:
-                cc = line[line.find("<cc>")+4:line.find("</cc>")].lower()
+                cc = line[line.find("<cc>")+4:line.find("</cc>")]
             bcc = ""
             if line.find("<bcc>") != -1:
-                bcc = line[line.find("<bcc>")+5:line.find("</bcc>")].lower()
+                bcc = line[line.find("<bcc>")+5:line.find("</bcc>")]
             if line.find("<subj>") != -1:
-                subj = line[line.find("<subj>")+6:line.find("</subj>")].lower()
+                subj = line[line.find("<subj>")+6:line.find("</subj>")]
             if line.find("<body>") != -1:
-                body = line[line.find("<body>")+6:line.find("</body>")].lower()
+                body = line[line.find("<body>")+6:line.find("</body>")]
             emails.append(Email(row, fr, to, cc, bcc, subj, body, date))
 
     # write to recs.txt file
