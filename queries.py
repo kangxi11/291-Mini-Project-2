@@ -160,55 +160,24 @@ def main():
 
             queries.append(temp_que)
         
-        for word in result:
-            first = False
-            # get next word
-            if result.index(word) != len(result)-1:
-                next_word = result[result.index(word)+1]
-            # get previous word
-            if result.index(word) != 0:
-                prev_word = result[result.index(word)-1]
-            # set flag for first word
-            else:
-                first = True
-            # check if word is to, from, cc or bcc
-            if word in emailPrefixes:
-                returns = searchEmails(word, next_word)
+        for t_que in queries:
+            if t_que[0] in emailPrefixes:
+                #returns = searchEmails(word, next_word)
                 # if its the first return put it in rows
-                if first:
-                    rows = returns
-                # else intersect returns with rows
-                else:
-                    rows = rows & returns
+                print("Email Prefixes:",t_que)
+                
             # check if word is subj or body
-            elif word in termPrefixes:
-                returns = searchTerms(word, next_word)
+            elif t_que[0] in termPrefixes:
+                #returns = searchTerms(word, next_word)
                 # if its the first return put it in rows
-                if first:
-                    rows = returns
-                # else intersect returns with rows
-                else:
-                    rows = rows & returns
+                print("Term Prefixes:",t_que)
             # check if word is date
-            elif word[:4] == "date":
+            elif t_que[0] is "date":
                 # daniel handles all the different cases
-                continue
+                print("Find Date:", t_que)
             # word is not a prefix
             else:
-                # word is < > <= >= or =
-                if word in comparators:
-                    continue
-                # word is part of email or term query
-                elif prev_word in emailPrefixes or prev_word in termPrefixes:
-                    continue
-                # word is part of date query
-                elif "date" in prev_word or prev_word in comparators:
-                    continue
-                # word is a term to search for in subj and body fields
-                else:
-                    print(word)
-                    # ryan implements this part
-                    continue
+                print("Search Terms: ", t_que)
 
         # get output from records index and print
         output = searchRecords(rows)
