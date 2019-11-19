@@ -102,11 +102,14 @@ def main():
         queries = []
 
         if query == "exit":
+            print("Exiting.")
             break
         if query == "output=brief":
             setting = 0
+            print("Output changed to brief.")
             continue
         if query == "output=full":
+            print("Output changed to full.")
             setting = 1
             continue
         # split the query by whitespace and colons
@@ -160,12 +163,21 @@ def main():
 
             queries.append(temp_que)
         
+        # initialize final row set
+        rows = set()
         for t_que in queries:
+            first = False
+            # set flag if query is the first query
+            if not rows:
+                first = True
             if t_que[0] in emailPrefixes:
-                #returns = searchEmails(word, next_word)
+                returns = searchEmails(t_que[0], t_que[1])
                 # if its the first return put it in rows
-                print("Email Prefixes:",t_que)
-                
+                if first:
+                    rows = returns
+                # else inersect returns with final row set
+                else:
+                    rows = rows & returns
             # check if word is date
             elif t_que[0] is "date":
                 # daniel handles all the different cases
@@ -185,14 +197,21 @@ def main():
 
         # get output from records index and print
         output = searchRecords(rows)
+        if not output:
+            print("Query did not match any records.")
         # print full output
         if setting:
-            print(output)
+            for pair in output:
+                print("Row ID: ", pair[0].decode("utf-8"))
+                # perhaps change this to be more visually appealing
+                print("Full record: ", pair[1].decode("utf-8"))
         # print brief output
         else:
-            for x in output:
-                print(x)
-        # we'll deal with the correct printing later
+            for pair in output:
+                print("Row ID: ", pair[0].decode("utf-8"))
+                subj = pair[1].decode("utf-8")
+                subj = subj[subj.find("<subj>")+6:subj.find("</subj>")]
+                print("Subject field: ", subj)
 
 
 
