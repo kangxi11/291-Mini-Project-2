@@ -118,7 +118,10 @@ def main():
         # handle the query
         while result != []:
             temp_que = []
+            temp2 = None
             temp_que.append(result.pop(0))
+            date = None
+            d_temp = None
 
             if temp_que[0] in emailPrefixes or temp_que[0] in termPrefixes:
                 temp_que.append(result.pop(0))
@@ -130,17 +133,34 @@ def main():
                     if temp_que[0].find(comp) != -1:
                         sign = comp
                 if sign == None:
+                    temp2 = result.pop(0)
                     for comp in comparators:
-                        if result[0].find(comp) != -1:
+                        if temp2.find(comp) != -1:
                             sign = comp
                 if sign == None:
                     sign = ":"
 
-                # now find the date we are trying to find
-                
-        
-        print(queries)
+                # find the date we are trying to find
+                # the date is either in temp_que[0], temp2, or result[0]
 
+                if temp_que[0].find("/") != -1:
+                    date = temp_que[0][len(sign)+4:]
+                elif temp2 is not None and temp2.find("/") != -1:
+                    if sign is not ":":
+                        date = temp2[len(sign):]
+                    else:
+                        date = temp2
+                else:
+                    date = result.pop(0)
+
+                # now find the date we are trying to find
+                temp_que[0] = "date"
+                temp_que.append(sign)
+                temp_que.append(date)
+
+
+            queries.append(temp_que)
+                
 
         for word in result:
             first = False
