@@ -166,18 +166,22 @@ def main():
                 # if its the first return put it in rows
                 print("Email Prefixes:",t_que)
                 
-            # check if word is subj or body
-            elif t_que[0] in termPrefixes:
-                #returns = searchTerms(word, next_word)
-                # if its the first return put it in rows
-                print("Term Prefixes:",t_que)
             # check if word is date
             elif t_que[0] is "date":
                 # daniel handles all the different cases
                 print("Find Date:", t_que)
             # word is not a prefix
             else:
-                print("Search Terms: ", t_que)
+                t_row = None
+
+                if t_que[0] == "subj":
+                    t_row = searchTerms(t_que[1], None)
+                elif t_que[0] == "body":
+                    t_row = searchTerms(None, t_que[1])
+                else:
+                    t_row = searchTerms(t_que[0], t_que[0])
+
+                print(t_row)
 
         # get output from records index and print
         output = searchRecords(rows)
