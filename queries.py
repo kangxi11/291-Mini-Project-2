@@ -136,16 +136,8 @@ def main():
                 if sign == None:
                     sign = ":"
 
-                # now append the query to the master list
-                temp_que[0] = "date"
-                temp_que.append(sign)
-                # next element is just the sign
-                for comp in comparators:
-                    if result[0] == comp:
-                        result.pop(0)
-                        temp_que.append(result.pop(0))
-                        
-            queries.append(temp_que)
+                # now find the date we are trying to find
+                
         
         print(queries)
 
