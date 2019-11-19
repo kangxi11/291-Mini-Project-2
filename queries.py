@@ -158,10 +158,8 @@ def main():
                 temp_que.append(sign)
                 temp_que.append(date)
 
-
             queries.append(temp_que)
-                
-
+        
         for word in result:
             first = False
             # get next word
