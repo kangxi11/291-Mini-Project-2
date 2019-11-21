@@ -1,7 +1,5 @@
 import sys
 
-lines = []
-
 class RecsEmail(object):
     def __init__(self, row, fr, to, cc, bcc, subj, body, date):
         self.row = row
@@ -13,30 +11,28 @@ class RecsEmail(object):
         self.body = body
         self.date = date
 
-def create_recs():
+def create_recs(line,e):
     emails = []
-    for line in lines:
-        if line.find("<mail>") != -1:
-            row = line[line.find("<row>")+5:line.find("</row>")]
-            fr = line[line.find("<from>")+6:line.find("</from>")]
-            date = line[line.find("<date>")+6:line.find("</date>")]
-            to = ""
-            if line.find("<to>") != -1:
-                to = line[line.find("<to>")+4:line.find("</to>")]
-            cc = ""
-            if line.find("<cc>") != -1:
-                cc = line[line.find("<cc>")+4:line.find("</cc>")]
-            bcc = ""
-            if line.find("<bcc>") != -1:
-                bcc = line[line.find("<bcc>")+5:line.find("</bcc>")]
-            if line.find("<subj>") != -1:
-                subj = line[line.find("<subj>")+6:line.find("</subj>")]
-            if line.find("<body>") != -1:
-                body = line[line.find("<body>")+6:line.find("</body>")]
-            emails.append(RecsEmail(row, fr, to, cc, bcc, subj, body, date))
+    if line.find("<mail>") != -1:
+        row = line[line.find("<row>")+5:line.find("</row>")]
+        fr = line[line.find("<from>")+6:line.find("</from>")]
+        date = line[line.find("<date>")+6:line.find("</date>")]
+        to = ""
+        if line.find("<to>") != -1:
+            to = line[line.find("<to>")+4:line.find("</to>")]
+        cc = ""
+        if line.find("<cc>") != -1:
+            cc = line[line.find("<cc>")+4:line.find("</cc>")]
+        bcc = ""
+        if line.find("<bcc>") != -1:
+            bcc = line[line.find("<bcc>")+5:line.find("</bcc>")]
+        if line.find("<subj>") != -1:
+            subj = line[line.find("<subj>")+6:line.find("</subj>")]
+        if line.find("<body>") != -1:
+            body = line[line.find("<body>")+6:line.find("</body>")]
+        emails.append(RecsEmail(row, fr, to, cc, bcc, subj, body, date))
 
     # write to recs.txt file
-    e = open("recs.txt", "w")
     for email in emails:
         row_str = email.row + ":<mail>"
         row2_str = "<row>" + email.row + "</row>"
@@ -52,33 +48,27 @@ def create_recs():
         temp = row_str + row2_str + date_str + from_str + to_str + subj_str + cc_str + bcc_str + body_str + end_str
         e.write(temp)
 
-    e.close()
-
 
 class DateEmail(object):
     def __init__(self, row, date):
         self.row = row
         self.date = date
 
-def create_date():
+def create_date(line,e):
     emails = []
 
     # extract all necessary info from xml file
-    for line in lines:
-        if line.find("<mail>") != -1:
-            row = line[line.find("<row>")+5:line.find("</row>")]
-            date = line[line.find("<date>")+6:line.find("</date>")]
-            emails.append(DateEmail(row, date))
+    if line.find("<mail>") != -1:
+        row = line[line.find("<row>")+5:line.find("</row>")]
+        date = line[line.find("<date>")+6:line.find("</date>")]
+        emails.append(DateEmail(row, date))
 
     
     # write to emails.txt file
-    e = open("dates.txt", "w")
     for email in emails:
         row_str = ":" + email.row + "\n"
         temp = email.date + row_str
         e.write(temp)
-
-    e.close()
 
 
 
@@ -91,28 +81,23 @@ class EmailsEmail(object):
         self.cc = cc
         self.bcc = bcc
 
-def create_emails():
-    global lines
-
+def create_emails(line,e):
     emails = []
-
-    for line in lines:
-        if line.find("<mail>") != -1:
-            row = line[line.find("<row>")+5:line.find("</row>")].lower()
-            fr = line[line.find("<from>")+6:line.find("</from>")].lower()
-            to = ""
-            if line.find("<to>") != -1:
-                to = line[line.find("<to>")+4:line.find("</to>")].lower()
-            cc = ""
-            if line.find("<cc>") != -1:
-                cc = line[line.find("<cc>")+4:line.find("</cc>")].lower()
-            bcc = ""
-            if line.find("<bcc>") != -1:
-                bcc = line[line.find("<bcc>")+5:line.find("</bcc>")].lower()
-            emails.append(EmailsEmail(row, fr, to, cc, bcc))
+    if line.find("<mail>") != -1:
+        row = line[line.find("<row>")+5:line.find("</row>")].lower()
+        fr = line[line.find("<from>")+6:line.find("</from>")].lower()
+        to = ""
+        if line.find("<to>") != -1:
+            to = line[line.find("<to>")+4:line.find("</to>")].lower()
+        cc = ""
+        if line.find("<cc>") != -1:
+            cc = line[line.find("<cc>")+4:line.find("</cc>")].lower()
+        bcc = ""
+        if line.find("<bcc>") != -1:
+            bcc = line[line.find("<bcc>")+5:line.find("</bcc>")].lower()
+        emails.append(EmailsEmail(row, fr, to, cc, bcc))
 
     # write to emails.txt file
-    e = open("emails.txt", "w")
     for email in emails:
         row_str = ":" + email.row + "\n"
         temp = "from-" + email.fr + row_str
@@ -133,8 +118,6 @@ def create_emails():
                 temp = "bcc-" + x + row_str
                 e.write(temp)
 
-    e.close()
-
 
 class TermsEmail(object):
     def __init__(self, row, subj, body):
@@ -142,20 +125,17 @@ class TermsEmail(object):
         self.subj = subj
         self.body = body
 
-def create_terms():
-    global lines
-
+def create_terms(line,t):
     emails = []
     valid_special = ["_", "-"]
     terms = []
     
-    for line in lines:
-        if line.find("<mail>") != -1:
-            row = line[line.find("<row>")+5:line.find("</row>")]
-            subj = line[line.find("<subj>")+6:line.find("</subj>")]
-            body = line[line.find("<body>")+6:line.find("</body>")]
+    if line.find("<mail>") != -1:
+        row = line[line.find("<row>")+5:line.find("</row>")]
+        subj = line[line.find("<subj>")+6:line.find("</subj>")]
+        body = line[line.find("<body>")+6:line.find("</body>")]
 
-            emails.append(TermsEmail(row, subj, body))
+        emails.append(TermsEmail(row, subj, body))
 
     for email in emails:
         # search for terms in the subject line
@@ -182,25 +162,35 @@ def create_terms():
         if len(temp) > 2:
             terms.append("b-"+temp.lower()+":"+email.row)
     
-    t = open("terms.txt", "w")
     for term in terms:
         t.write(term+"\n")
-    t.close()
 
 
 
 def main():
-    global lines
-
     f = open(sys.argv[1], "r")
-    lines = f.readlines()
+    line = f.readline()
 
-    create_terms()
-    create_emails()
-    create_date()
-    create_recs()
+    # clear all txt files if they already exist
+    t = open("terms.txt", "w")
+    e = open("emails.txt", "w")
+    r = open("recs.txt", "w")
+    d = open("dates.txt", "w")
+
+    while line != "":
+        create_terms(line,t)
+        create_emails(line,e)
+        create_date(line,r)
+        create_recs(line,d)
+        
+        line = f.readline()
+
 
     f.close()
+    t.close()
+    e.close()
+    r.close()
+    d.close()
 
 
 main()
