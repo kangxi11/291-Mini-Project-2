@@ -101,6 +101,7 @@ def searchDates(date, sign):
         return rows
     elif sign == ">":
         #Find all emails that are more recent than date; Start from current --> end
+        iter = cur.set_range(date.encode("utf-8"))
         iter = cur.next_dup()
         while iter:
             rows.add(iter[1])
@@ -119,6 +120,7 @@ def searchDates(date, sign):
         return rows
     elif sign == ">=":
         #Find all emails that are more recent than date, INCLUDING
+        iter = cur.set_range(date.encode("utf-8"))
         while iter:
             rows.add(iter[1])
             iter = cur.next()
@@ -126,9 +128,10 @@ def searchDates(date, sign):
                 break
         return rows
     else:
-        if comp != ":":
+        if sign != ":":
             raise AssertionError("Not a valid comparator operative")
         else:
+            iter = cur.set_range(date.encode("utf-8"))
             while iter:
                 rows.add(iter[1])
                 iter = cur.next_dup()
