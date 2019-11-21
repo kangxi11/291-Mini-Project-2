@@ -96,18 +96,15 @@ def searchDates(date, sign):
         while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') < datetime.datetime.strptime(date, '%Y/%m/%d'):
             rows.add(iter[1])
             iter = cur.next()
-            if not iter:
-                break
         return rows
     elif sign == ">":
         #Find all emails that are more recent than date; Start from current --> end
+        
         iter = cur.set_range(date.encode("utf-8"))
         iter = cur.next_dup()
         while iter:
             rows.add(iter[1])
             iter = cur.next()
-            if not iter:
-                break
         return rows
     elif sign == "<=":
         #Find all emails that are older than date, INCLUDING
@@ -115,8 +112,6 @@ def searchDates(date, sign):
         while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') <= datetime.datetime.strptime(date, '%Y/%m/%d'):
             rows.add(iter[1])
             iter = cur.next()
-            if not iter:
-                break
         return rows
     elif sign == ">=":
         #Find all emails that are more recent than date, INCLUDING
@@ -124,8 +119,6 @@ def searchDates(date, sign):
         while iter:
             rows.add(iter[1])
             iter = cur.next()
-            if not iter:
-                break
         return rows
     else:
         if sign != ":":
@@ -135,8 +128,6 @@ def searchDates(date, sign):
             while iter:
                 rows.add(iter[1])
                 iter = cur.next_dup()
-                if not iter:
-                    break
             return rows
 
 def main():
@@ -266,16 +257,17 @@ def main():
             print("Query did not match any records.")
         # print full output
         if setting:
-            print ("Row ID       |       Subject Field")
-            for pair in output:
-                print(pair[0].decode("utf-8").ljust(13,' '), ' ', pair[1].decode("utf-8"))
-        # print brief output
-        else:
             for pair in output:
                 print("Row ID: ", pair[0].decode("utf-8"))
+                # perhaps change this to be more visually appealing
+                print("Full record: ", pair[1].decode("utf-8"))
+        # print brief output
+        else:
+            print ("Row ID       |       Subject Field")
+            for pair in output:
                 subj = pair[1].decode("utf-8")
                 subj = subj[subj.find("<subj>")+6:subj.find("</subj>")]
-                print("Subject field: ", subj)
+                print(pair[0].decode("utf-8").ljust(13,' '), ' ', subj)
 
 
 
