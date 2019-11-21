@@ -96,15 +96,18 @@ def searchDates(date, sign):
         while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') < datetime.datetime.strptime(date, '%Y/%m/%d'):
             rows.add(iter[1])
             iter = cur.next()
+            if not iter:
+                break
         return rows
     elif sign == ">":
         #Find all emails that are more recent than date; Start from current --> end
-        
         iter = cur.set_range(date.encode("utf-8"))
         iter = cur.next_dup()
         while iter:
             rows.add(iter[1])
             iter = cur.next()
+            if not iter:
+                break
         return rows
     elif sign == "<=":
         #Find all emails that are older than date, INCLUDING
@@ -112,6 +115,8 @@ def searchDates(date, sign):
         while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') <= datetime.datetime.strptime(date, '%Y/%m/%d'):
             rows.add(iter[1])
             iter = cur.next()
+            if not iter:
+                break
         return rows
     elif sign == ">=":
         #Find all emails that are more recent than date, INCLUDING
@@ -119,6 +124,8 @@ def searchDates(date, sign):
         while iter:
             rows.add(iter[1])
             iter = cur.next()
+            if not iter:
+                break
         return rows
     else:
         if sign != ":":
@@ -128,6 +135,8 @@ def searchDates(date, sign):
             while iter:
                 rows.add(iter[1])
                 iter = cur.next_dup()
+                if not iter:
+                    break
             return rows
 
 def main():
