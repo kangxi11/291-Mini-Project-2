@@ -38,7 +38,7 @@ def searchTerms(subj, body):
 
             if iter is not None:
                 while iter[0].decode("utf-8").find(query) != -1:
-                    body_rows.append(iter[1]
+                    body_rows.append(iter[1])
                     iter = cur.next_dup()
         else:
             query = 'b-'+body[:-1]
