@@ -180,8 +180,8 @@ def main():
     while line != "":
         create_terms(line,t)
         create_emails(line,e)
-        create_date(line,r)
-        create_recs(line,d)
+        create_date(line,d)
+        create_recs(line,r)
         
         line = f.readline()
 
