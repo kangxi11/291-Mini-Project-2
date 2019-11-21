@@ -51,7 +51,7 @@ def searchTerms(subj, body):
     database.close()
 
     if subj is not None and body is not None:
-        return subj_rows & body_rows
+        return subj_rows | body_rows
     elif subj is None and body is not None:
         return body_rows
     elif subj is not None and body is None:
