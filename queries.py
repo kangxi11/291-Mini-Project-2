@@ -90,6 +90,7 @@ def searchDates(date, sign):
 
     rows = set()
 
+    iter = cur.set(date.encode("utf-8"))
     if sign == "<":
         #Find all emails that are older than date; Start from oldest --> current
         iter = cur.first()
