@@ -26,7 +26,7 @@ def searchTerms(subj, body):
             iter = cur.set_range(query.encode("utf-8"))
             
             while iter[0].decode("utf-8")[:len(query)].find(query) != -1:
-                subj_rows.append(iter[1]
+                subj_rows.append(iter[1])
                 iter = cur.next()
 
 
