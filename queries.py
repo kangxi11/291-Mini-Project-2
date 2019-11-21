@@ -98,7 +98,7 @@ def searchDates(date, sign):
         #Find all emails that are older than date, NOT INCLUDING
         iter = cur.first()
         while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') < datetime.datetime.strptime(date, '%Y/%m/%d'):
-            rows.add(iter[1].decode("utf-8"))
+            rows.add(iter[1])
             iter = cur.next()
         return rows
     #elif comp == ">":
@@ -220,7 +220,12 @@ def main():
             # check if word is date
             elif t_que[0] is "date":
                 returns = searchDates(date, sign)
-                rows = returns
+                # if its the first return put it in rows
+                if first:
+                    rows = returns
+                # else inersect returns with final row set
+                else:
+                    rows = rows & returns
             # word is not a prefix
             else:
                 t_row = None
