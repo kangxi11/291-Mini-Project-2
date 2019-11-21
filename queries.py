@@ -266,7 +266,7 @@ def main():
             print("Query did not match any records.")
         # print full output
         if setting:
-            print "Row ID       |       Subject Field"
+            print ("Row ID       |       Subject Field")
             for pair in output:
                 print(pair[0].decode("utf-8").ljust(13,' '), ' ', pair[1].decode("utf-8"))
         # print brief output
