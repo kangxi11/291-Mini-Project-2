@@ -65,7 +65,7 @@ def searchRecords(rows):
     output = []
 
     for row in rows:
-        iter = cur.set(row.encode("utf-8"))
+        iter = cur.set(row)
         # add key value pair to output
         output.append(iter)
     return output
