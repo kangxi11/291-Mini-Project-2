@@ -255,6 +255,7 @@ def main():
         output = searchRecords(rows)
         if not output:
             print("Query did not match any records.")
+            continue
         # print full output
         if setting:
             for pair in output:
