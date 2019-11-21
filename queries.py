@@ -264,7 +264,7 @@ def main():
                 print("Full record: ", pair[1].decode("utf-8"))
         # print brief output
         else:
-            print ("Row ID       | Subject Field\n")
+            print ("Row ID     | Subject Field\n")
             for pair in output:
                 subj = pair[1].decode("utf-8")
                 subj = subj[subj.find("<subj>")+6:subj.find("</subj>")]
