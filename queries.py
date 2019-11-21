@@ -1,4 +1,7 @@
 from bsddb3 import db
+import datetime
+import time
+import sys
 
 def searchTerms(subj, body):
     DB_File = "te.idx"
@@ -79,6 +82,42 @@ def searchEmails(field, email):
         rows.add(iter[1])
         iter = cur.next_dup()
     return rows
+
+def searchDates(date, sign):
+    database = db.DB()
+    database.open("da.idx")
+    cur = database.cursor()
+
+    key = date
+    comp = sign
+    rows = set()
+
+    iter = cur.set(key.encode("utf-8"))
+
+    if comp == "<":
+        #Find all emails that are older than date, NOT INCLUDING
+        iter = cur.first()
+        while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') < datetime.datetime.strptime(date, '%Y/%m/%d'):
+            rows.add(iter[1].decode("utf-8"))
+            iter = cur.next()
+        return rows
+    #elif comp == ">":
+        #Find all emails that are more recent than date, NOT INCLUDING
+        #return rows
+    #elif comp == "<=":
+        #Find all emails that are older than date, INCLUDING
+        #return rows
+    #elif comp == ">=":
+        #Find all emails that are more recent than date, INCLUDING
+        #return rows
+    else:
+        if comp != ":":
+            raise AssertionError("Not a valid comparator operative")
+        else:
+            while iter:
+                rows.add(iter[1])
+                iter = cur.next_dup()
+            return rows
 
 def main():
     print("\nWelcome to the information retrieval system.")
@@ -180,8 +219,8 @@ def main():
                     rows = rows & returns
             # check if word is date
             elif t_que[0] is "date":
-                # daniel handles all the different cases
-                print("Find Date:", t_que)
+                returns = searchDates(date, sign)
+                rows = returns
             # word is not a prefix
             else:
                 t_row = None
