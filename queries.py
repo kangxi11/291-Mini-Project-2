@@ -88,43 +88,43 @@ def searchDates(date, sign):
     database.open("da.idx")
     cur = database.cursor()
 
-    key = date
-    comp = sign
     rows = set()
 
-    iter = cur.set(key.encode("utf-8"))
-
-    if comp == "<":
+    if sign == "<":
         #Find all emails that are older than date; Start from oldest --> current
         iter = cur.first()
         while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') < datetime.datetime.strptime(date, '%Y/%m/%d'):
             rows.add(iter[1])
             iter = cur.next()
         return rows
-    elif comp == ">":
+    elif sign == ">":
         #Find all emails that are more recent than date; Start from current --> end
+        
+        iter = cur.set_range(date.encode("utf-8"))
         iter = cur.next_dup()
         while iter:
             rows.add(iter[1])
             iter = cur.next()
         return rows
-    elif comp == "<=":
+    elif sign == "<=":
         #Find all emails that are older than date, INCLUDING
         iter = cur.first()
         while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') <= datetime.datetime.strptime(date, '%Y/%m/%d'):
             rows.add(iter[1])
             iter = cur.next()
         return rows
-    elif comp == ">=":
+    elif sign == ">=":
         #Find all emails that are more recent than date, INCLUDING
+        iter = cur.set_range(date.encode("utf-8"))
         while iter:
             rows.add(iter[1])
             iter = cur.next()
         return rows
     else:
-        if comp != ":":
+        if sign != ":":
             raise AssertionError("Not a valid comparator operative")
         else:
+            iter = cur.set_range(date.encode("utf-8"))
             while iter:
                 rows.add(iter[1])
                 iter = cur.next_dup()
