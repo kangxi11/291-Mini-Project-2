@@ -19,14 +19,14 @@ def searchTerms(subj, body):
 
             if iter is not None:
                 while iter[0].decode("utf-8").find(query) != -1:
-                    subj_rows.append(iter[1].decode("utf-8"))
+                    subj_rows.append(iter[1])
                     iter = cur.next()
         else:
             query = 's-'+subj[:-1]
             iter = cur.set_range(query.encode("utf-8"))
             
             while iter[0].decode("utf-8")[:len(query)].find(query) != -1:
-                subj_rows.append(iter[1].decode("utf-8"))
+                subj_rows.append(iter[1]
                 iter = cur.next()
 
 
@@ -38,24 +38,24 @@ def searchTerms(subj, body):
 
             if iter is not None:
                 while iter[0].decode("utf-8").find(query) != -1:
-                    body_rows.append(iter[1].decode("utf-8"))
-                    iter = cur.next()
+                    body_rows.append(iter[1]
+                    iter = cur.next_dup()
         else:
             query = 'b-'+body[:-1]
             iter = cur.set_range(query.encode("utf-8"))
             
             while iter[0].decode("utf-8")[:len(query)].find(query) != -1:
-                body_rows.append(iter[1].decode("utf-8"))
-                iter = cur.next()
+                body_rows.append(iter[1])
+                iter = cur.next_dup()
     cur.close()
     database.close()
 
     if subj is not None and body is not None:
-        return list(set(subj_rows) & set(body_rows))
+        return set(subj_rows) & set(body_rows)
     elif subj is None and body is not None:
-        return body_rows
+        return set(body_rows)
     elif subj is not None and body is None:
-        return subj_rows
+        return set(subj_rows)
 
 # returns a list of key value pairs specified by row keys in rows
 def searchRecords(rows):
@@ -65,7 +65,7 @@ def searchRecords(rows):
     output = []
 
     for row in rows:
-        iter = cur.set(row)
+        iter = cur.set(row.encode("utf-8"))
         # add key value pair to output
         output.append(iter)
     return output
