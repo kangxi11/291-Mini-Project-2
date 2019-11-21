@@ -9,8 +9,8 @@ def searchTerms(subj, body):
     database.open(DB_File)
     cur = database.cursor()
 
-    subj_rows = []
-    body_rows = []
+    subj_rows = set()
+    body_rows = set()
 
     if subj is not None:
         if '%' not in subj:
@@ -19,14 +19,14 @@ def searchTerms(subj, body):
 
             if iter is not None:
                 while iter[0].decode("utf-8").find(query) != -1:
-                    subj_rows.append(iter[1])
+                    subj_rows.add(iter[1])
                     iter = cur.next()
         else:
             query = 's-'+subj[:-1]
             iter = cur.set_range(query.encode("utf-8"))
             
             while iter[0].decode("utf-8")[:len(query)].find(query) != -1:
-                subj_rows.append(iter[1])
+                subj_rows.add(iter[1])
                 iter = cur.next()
 
 
@@ -38,24 +38,24 @@ def searchTerms(subj, body):
 
             if iter is not None:
                 while iter[0].decode("utf-8").find(query) != -1:
-                    body_rows.append(iter[1])
+                    body_rows.add(iter[1])
                     iter = cur.next_dup()
         else:
             query = 'b-'+body[:-1]
             iter = cur.set_range(query.encode("utf-8"))
             
             while iter[0].decode("utf-8")[:len(query)].find(query) != -1:
-                body_rows.append(iter[1])
+                body_rows.add(iter[1])
                 iter = cur.next_dup()
     cur.close()
     database.close()
 
     if subj is not None and body is not None:
-        return set(subj_rows) & set(body_rows)
+        return subj_rows & body_rows
     elif subj is None and body is not None:
-        return set(body_rows)
+        return body_rows
     elif subj is not None and body is None:
-        return set(subj_rows)
+        return subj_rows
 
 # returns a list of key value pairs specified by row keys in rows
 def searchRecords(rows):
@@ -228,17 +228,18 @@ def main():
                     rows = rows & returns
             # word is not a prefix
             else:
-                t_row = None
-
                 if t_que[0] == "subj":
-                    t_row = searchTerms(t_que[1], None)
+                    returns = searchTerms(t_que[1], None)
                 elif t_que[0] == "body":
-                    t_row = searchTerms(None, t_que[1])
+                    returns = searchTerms(None, t_que[1])
                 else:
-                    t_row = searchTerms(t_que[0], t_que[0])
+                    returns = searchTerms(t_que[0], t_que[0])
 
-                print(t_row)
-
+                if first:
+                    rows = returns
+                # else inersect returns with final row set
+                else:
+                    rows = rows & returns
         # get output from records index and print
         output = searchRecords(rows)
         if not output:
