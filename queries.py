@@ -95,21 +95,32 @@ def searchDates(date, sign):
     iter = cur.set(key.encode("utf-8"))
 
     if comp == "<":
-        #Find all emails that are older than date, NOT INCLUDING
+        #Find all emails that are older than date; Start from oldest --> current
         iter = cur.first()
         while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') < datetime.datetime.strptime(date, '%Y/%m/%d'):
             rows.add(iter[1])
             iter = cur.next()
         return rows
-    #elif comp == ">":
-        #Find all emails that are more recent than date, NOT INCLUDING
-        #return rows
-    #elif comp == "<=":
+    elif comp == ">":
+        #Find all emails that are more recent than date; Start from current --> end
+        iter = cur.next_dup()
+        while iter:
+            rows.add(iter[1])
+            iter = cur.next()
+        return rows
+    elif comp == "<=":
         #Find all emails that are older than date, INCLUDING
-        #return rows
-    #elif comp == ">=":
+        iter = cur.first()
+        while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') <= datetime.datetime.strptime(date, '%Y/%m/%d'):
+            rows.add(iter[1])
+            iter = cur.next()
+        return rows
+    elif comp == ">=":
         #Find all emails that are more recent than date, INCLUDING
-        #return rows
+        while iter:
+            rows.add(iter[1])
+            iter = cur.next()
+        return rows
     else:
         if comp != ":":
             raise AssertionError("Not a valid comparator operative")
@@ -214,7 +225,7 @@ def main():
                 # if its the first return put it in rows
                 if first:
                     rows = returns
-                # else inersect returns with final row set
+                # else intersect returns with final row set
                 else:
                     rows = rows & returns
             # check if word is date
@@ -223,7 +234,7 @@ def main():
                 # if its the first return put it in rows
                 if first:
                     rows = returns
-                # else inersect returns with final row set
+                # else intersect returns with final row set
                 else:
                     rows = rows & returns
             # word is not a prefix
