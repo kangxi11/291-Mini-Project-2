@@ -105,8 +105,7 @@ def searchDates(date, sign):
         iter = cur.set_range(date.encode("utf-8"))
         iter = cur.next_dup()
 
-        while iter:
-            print(iter)
+        while iter != None:
             rows.add(iter[1])
             iter = cur.next()
         return rows
@@ -123,7 +122,7 @@ def searchDates(date, sign):
     elif sign == ">=":
         #Find all emails that are more recent than date, INCLUDING
         iter = cur.set_range(date.encode("utf-8"))
-        while iter:
+        while iter != None:
             rows.add(iter[1])
             iter = cur.next()
         return rows
