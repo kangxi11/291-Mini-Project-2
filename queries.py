@@ -90,6 +90,7 @@ def searchDates(date_t, sign):
     database.open("da.idx")
     cur = database.cursor()
 
+    print(date_t)
     date = datetime.datetime.strptime(date_t, '%Y/%m/%d')
 
     rows = set()
@@ -259,6 +260,7 @@ def main():
             queries.append(temp_que)
         
         # initialize final row set
+
         rows = set()
         for t_que in queries:
             first = False
@@ -275,7 +277,7 @@ def main():
                     rows = rows & returns
             # check if word is date
             elif t_que[0] is "date":
-                returns = searchDates(date, sign)
+                returns = searchDates(t_que[2], t_que[1])
                 # if its the first return put it in rows
                 if first:
                     rows = returns
