@@ -103,15 +103,7 @@ def searchDates(date, sign):
     elif sign == ">":
         #Find all emails that are more recent than date; Start from current --> end
         iter = cur.set_range(date.encode("utf-8"))
-
-        print(iter)
-
-        if iter == None:
-            iter = cur.first()
-            if datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') > datetime.datetime.strptime(date, '%Y/%m/%d'):
-                iter = cur.first()
-        else:
-            iter = cur.next_dup()
+        iter = cur.next_dup()
 
         while iter:
             rows.add(iter[1])
