@@ -108,6 +108,7 @@ def searchDates(date, sign):
             iter = cur.first()
             if datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') > datetime.datetime.strptime(date, '%Y/%m/%d'):
                 iter = cur.first()
+                print(iter)
         else:
             iter = cur.next_dup()
 
