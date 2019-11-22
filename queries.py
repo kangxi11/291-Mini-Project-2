@@ -165,12 +165,12 @@ def searchDates(date_t, sign):
         if sign != ":":
             raise AssertionError("Not a valid comparator operative")
         else:
-            iter = cur.set_range(date_t.encode("utf-8"))
+            iter = cur.set(date_t.encode("utf-8"))
 
             if (iter is None) or (datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') != date):
                 return
 
-            while iter:
+            while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') == date:
                 rows.add(iter[1])
                 iter = cur.next()
             return rows
