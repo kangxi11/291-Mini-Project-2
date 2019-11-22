@@ -105,12 +105,12 @@ def searchDates(date, sign):
         iter = cur.set_range(date.encode("utf-8"))
 
         if iter == None:
-            first = cur.first()
-            if datetime.datetime.strptime(first[0].decode("utf-8"), '%Y/%m/%d') > datetime.datetime.strptime(date, '%Y/%m/%d'):
-                iter = first
+            iter = cur.first()
+            if datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') > datetime.datetime.strptime(date, '%Y/%m/%d'):
+                iter = cur.first()
         else:
             iter = cur.next_dup()
-            
+
         while iter:
             rows.add(iter[1])
             iter = cur.next()
