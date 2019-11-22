@@ -90,7 +90,6 @@ def searchDates(date_t, sign):
     database.open("da.idx")
     cur = database.cursor()
 
-    print(date_t)
     date = datetime.datetime.strptime(date_t, '%Y/%m/%d')
 
     rows = set()
@@ -287,11 +286,11 @@ def main():
             # word is not a prefix
             else:
                 if t_que[0] == "subj":
-                    returns = searchTerms(t_que[1], None)
+                    returns = searchTerms(t_que[1].lower(), None)
                 elif t_que[0] == "body":
-                    returns = searchTerms(None, t_que[1])
+                    returns = searchTerms(None, t_que[1].lower())
                 else:
-                    returns = searchTerms(t_que[0], t_que[0])
+                    returns = searchTerms(t_que[0].lower(), t_que[0].lower())
 
                 if first:
                     rows = returns
