@@ -106,6 +106,7 @@ def searchDates(date, sign):
         iter = cur.next_dup()
 
         while iter:
+            print(iter)
             rows.add(iter[1])
             iter = cur.next()
         return rows
