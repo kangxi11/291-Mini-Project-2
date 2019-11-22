@@ -64,10 +64,12 @@ def searchRecords(rows):
     cur = database.cursor()
     output = []
 
-    for row in rows:
-        iter = cur.set(row)
-        # add key value pair to output
-        output.append(iter)
+    if rows is not None:
+        for row in rows:
+            iter = cur.set(row)
+            # add key value pair to output
+            output.append(iter)
+    
     return output
    
 # returns a set of row values associated with given field-email key
@@ -83,10 +85,12 @@ def searchEmails(field, email):
         iter = cur.next_dup()
     return rows
 
-def searchDates(date, sign):
+def searchDates(date_t, sign):
     database = db.DB()
     database.open("da.idx")
     cur = database.cursor()
+
+    date = datetime.datetime.strptime(date_t, '%Y/%m/%d')
 
     rows = set()
 
@@ -94,47 +98,81 @@ def searchDates(date, sign):
     if sign == "<":
         #Find all emails that are older than date; Start from oldest --> current
         iter = cur.first()
-        while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') < datetime.datetime.strptime(date, '%Y/%m/%d'):
+        while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') < date:
+            rows.add(iter[1])
+
+            iter = cur.next()
+            if iter == None:
+                break
+        return rows
+    elif sign == "<=":
+        #Find all emails that are older than date, INCLUDING
+        iter = cur.first()
+        while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') <= date:
             rows.add(iter[1])
             iter = cur.next()
+
             if iter == None:
                 break
         return rows
     elif sign == ">":
         #Find all emails that are more recent than date; Start from current --> end
-        iter = cur.set_range(date.encode("utf-8"))
-        iter = cur.next_dup()
 
+        # edge case:
+        iter = cur.last()
+        if datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') <= date:
+            return rows
+
+        iter = cur.set(date_t.encode("utf-8"))
+
+            # have to find the first date that is valid
+        date2 = date
+        while iter is None:
+            date2 += datetime.timedelta(days = 1)
+            iter = cur.set(date2.strftime('%Y/%m/%d').encode("utf-8"))
+        
+        # because > is not inclusive we have to find the next date
+        while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') == date:
+            iter = cur.next()
+        
         while iter != None:
-            print(iter)
-            rows.add(iter[1])
-            iter = cur.next()
-        return rows
-    elif sign == "<=":
-        #Find all emails that are older than date, INCLUDING
-        iter = cur.first()
-        while datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') <= datetime.datetime.strptime(date, '%Y/%m/%d'):
             rows.add(iter[1])
             iter = cur.next()
 
-            if iter == None:
-                break
         return rows
     elif sign == ">=":
-        #Find all emails that are more recent than date, INCLUDING
-        iter = cur.set_range(date.encode("utf-8"))
+        #Find all emails that are more recent than date; Start from current --> end
+
+        # edge case:
+        iter = cur.last()
+        if datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') < date:
+            return rows
+
+        iter = cur.set(date_t.encode("utf-8"))
+
+            # have to find the first date that is valid
+        date2 = date
+        while iter is None:
+            date2 += datetime.timedelta(days = 1)
+            iter = cur.set(date2.strftime('%Y/%m/%d').encode("utf-8"))
+                
         while iter != None:
             rows.add(iter[1])
             iter = cur.next()
+            
         return rows
     else:
         if sign != ":":
             raise AssertionError("Not a valid comparator operative")
         else:
-            iter = cur.set_range(date.encode("utf-8"))
+            iter = cur.set_range(date_t.encode("utf-8"))
+
+            if (iter is None) or (datetime.datetime.strptime(iter[0].decode("utf-8"), '%Y/%m/%d') != date):
+                return
+
             while iter:
                 rows.add(iter[1])
-                iter = cur.next_dup()
+                iter = cur.next()
             return rows
 
 def main():
