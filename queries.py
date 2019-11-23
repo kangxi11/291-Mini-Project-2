@@ -305,9 +305,31 @@ def main():
         # print full output
         if setting:
             for pair in output:
-                print("Row ID: ", pair[0].decode("utf-8"))
-                # perhaps change this to be more visually appealing
-                print("Full record: ", pair[1].decode("utf-8"))
+                spaces = 12 * ' '
+                print ("Row ID     | Full record\n")
+                line = pair[1].decode("utf-8")
+                fr = line[line.find("<from>")+6:line.find("</from>")]
+                date = line[line.find("<date>")+6:line.find("</date>")]
+                to = ""
+                if line.find("<to>") != -1:
+                    to = line[line.find("<to>")+4:line.find("</to>")]
+                cc = ""
+                if line.find("<cc>") != -1:
+                    cc = line[line.find("<cc>")+4:line.find("</cc>")]
+                bcc = ""
+                if line.find("<bcc>") != -1:
+                    bcc = line[line.find("<bcc>")+5:line.find("</bcc>")]
+                if line.find("<subj>") != -1:
+                    subj = line[line.find("<subj>")+6:line.find("</subj>")]
+                if line.find("<body>") != -1:
+                    body = line[line.find("<body>")+6:line.find("</body>")]
+                print(pair[0].decode("utf-8").ljust(10,' '), ' ', "Date: ", date)
+                print(spaces, "From: ", fr)
+                print(spaces, "To: ", to)
+                print(spaces, "Subject: ", subj)
+                print(spaces, "Cc: ", cc)
+                print(spaces, "Bcc: ", bcc)
+                print(spaces, "Body: ", body)
         # print brief output
         else:
             print ("Row ID     | Subject Field\n")
